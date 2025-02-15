@@ -7,9 +7,10 @@ import { FiDownload } from "react-icons/fi";
 import Photo from "@/app/components/ui/Photos";
 import { FaInstagram, FaFacebook, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import { IconType } from 'react-icons';
 
 interface SocialLink {
-  Icon: React.ComponentType;
+  Icon: IconType;
   href: string;
 }
 
