@@ -1,13 +1,119 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaCss3, FaHtml5, FaReact, FaFigma } from "react-icons/fa";
-import { SiSanity } from "react-icons/si";
-import { TbBrandCpp } from "react-icons/tb";
-import { SiTypescript, SiC, SiNextdotjs, SiTailwindcss } from 'react-icons/si';
+import { client } from '@/sanity/lib/sanityClient';
+import { IconType } from 'react-icons';
+import * as Icons from 'react-icons/fa';
+import * as IconsCpp from 'react-icons/tb';
+import * as IconsSi from 'react-icons/si';
 
-const AboutPage = () => {
+// Type Definitions
+interface PersonalInfo {
+  name: string;
+  age: number;
+  phone: string;
+  email: string;
+  occupation: string;
+  location: string;
+}
+
+interface Education {
+  _id: string;
+  title: string;
+  institute: string;
+  status: string;
+  details: string;
+  statusColor: string; // Not used anymore but kept for type compatibility
+}
+
+interface Experience {
+  _id: string;
+  title: string;
+  details: string[];
+}
+
+interface Skill {
+  _id: string;
+  name: string;
+  icon: string;
+}
+
+// Utility function to get skill icon
+function getSkillIcon(iconName: string): IconType {
+  const iconMap: { [key: string]: IconType } = {
+    ...Icons,
+    ...IconsCpp,
+    ...IconsSi
+  };
+
+  return iconMap[iconName] || Icons.FaCode;
+}
+
+// Helper function to get status color based on status text
+const getStatusColorClass = (status: string): string => {
+  const statusLower = status.toLowerCase();
+  
+  if (statusLower.includes('enrolled') || statusLower.includes('current')) {
+    return 'bg-gradient-to-r from-blue-600 to-blue-400';
+  }
+  
+  if (statusLower.includes('ongoing')) {
+    return 'bg-gradient-to-r from-purple-600 to-indigo-400';
+  }
+  
+  if (statusLower.includes('graduated') || statusLower.includes('completed')) {
+    return 'bg-gradient-to-r from-green-600 to-emerald-400';
+  }
+  
+  if (statusLower.includes('certified')) {
+    return 'bg-gradient-to-r from-yellow-500 to-amber-400';
+  }
+  
+  if (statusLower.includes('dropped') || statusLower.includes('discontinued')) {
+    return 'bg-gradient-to-r from-red-600 to-rose-400';
+  }
+  
+  // Default color for any other status
+  return 'bg-gradient-to-r from-gray-600 to-gray-400';
+};
+
+const AboutPage: React.FC = () => {
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo | null>(null);
+  const [educations, setEducations] = useState<Education[]>([]);
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch personal info
+        const personalInfoQuery = `*[_type == "personalInfo"][0]`;
+        const personalInfoData = await client.fetch(personalInfoQuery);
+        setPersonalInfo(personalInfoData);
+
+        // Fetch education
+        const educationQuery = `*[_type == "education"] | order(order asc)`;
+        const educationData = await client.fetch(educationQuery);
+        setEducations(educationData);
+
+        // Fetch experiences
+        const experienceQuery = `*[_type == "experience"] | order(order asc)`;
+        const experienceData = await client.fetch(experienceQuery);
+        setExperiences(experienceData);
+
+        // Fetch skills
+        const skillsQuery = `*[_type == "skill"] | order(order asc)`;
+        const skillsData = await client.fetch(skillsQuery);
+        setSkills(skillsData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -30,6 +136,8 @@ const AboutPage = () => {
     }
   };
 
+  if (!personalInfo) return <div>Loading...</div>;
+
   return (
     <div className="min-h-screen mt-12 bg-gradient-to-b from-black to-gray-900 py-16 lg:py-24">
       <motion.div 
@@ -50,12 +158,12 @@ const AboutPage = () => {
             
             <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
-                { label: "Name", value: "Muhammad Zohaib Faiz" },
-                { label: "Age", value: "19+" },
-                { label: "Number", value: "(+92) 3112620503" },
-                { label: "Email", value: "zohaibfaiz96@gmail.com" },
-                { label: "Occupation", value: "Computer Science Student" },
-                { label: "Location", value: "Karachi, Pakistan" }
+                { label: "Name", value: personalInfo.name },
+                { label: "Age", value: `${personalInfo.age}+` },
+                { label: "Number", value: personalInfo.phone },
+                { label: "Email", value: personalInfo.email },
+                { label: "Occupation", value: personalInfo.occupation },
+                { label: "Location", value: personalInfo.location }
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -85,38 +193,9 @@ const AboutPage = () => {
             </h2>
             
             <div className="mt-16 space-y-8">
-              {[
-                {
-                  title: "Bachelor of Science in Computer Science",
-                  institute: "Federal Urdu University of Science and Technology",
-                  status: "Currently Enrolled",
-                  details: "Relevant Coursework: Data Structures, Algorithms, Web Development, Databases",
-                  statusColor: "bg-emerald-500"
-                },
-                {
-                  title: "IT Certification",
-                  institute: "GIAIC",
-                  status: "Ongoing",
-                  details: "Advanced courses in Full Stack Development and Web 3",
-                  statusColor: "bg-blue-500"
-                },
-                {
-                  title: "Intermediate",
-                  institute: "DJ Govt. Science College",
-                  status: "Graduation: June 2023",
-                  details: "Pre-Engineering",
-                  statusColor: "bg-gray-500"
-                },
-                {
-                  title: "High School Diploma",
-                  institute: "Millennium's Education System",
-                  status: "Graduation: June 2021",
-                  details: "Honor Roll, Mathematics Competition Participant",
-                  statusColor: "bg-gray-500"
-                }
-              ].map((edu, index) => (
+              {educations.map((edu, index) => (
                 <motion.div
-                  key={index}
+                  key={edu._id}
                   variants={itemVariants}
                   className="group bg-white/5 backdrop-blur-lg border border-white/10 
                     p-10 rounded-3xl transition-all duration-500
@@ -127,8 +206,8 @@ const AboutPage = () => {
                     {edu.title}
                   </h3>
                   <p className="text-xl text-white/70 mt-3">{edu.institute}</p>
-                  <span className={`${edu.statusColor} text-white text-sm px-6 py-2 
-                    rounded-full inline-block mt-4 font-medium`}>
+                  <span className={`${getStatusColorClass(edu.status)} text-white text-sm px-6 py-2 
+                    rounded-full inline-block mt-4 font-medium shadow-lg`}>
                     {edu.status}
                   </span>
                   <p className="text-white/60 mt-6 group-hover:text-white/80 
@@ -139,7 +218,7 @@ const AboutPage = () => {
               ))}
             </div>
           </motion.div>
-
+          
           {/* Experience Section */}
           <motion.div variants={itemVariants}>
             <h2 className="text-5xl lg:text-6xl font-bold text-white relative inline-block
@@ -150,28 +229,9 @@ const AboutPage = () => {
             </h2>
             
             <div className="mt-16 space-y-8">
-              {[
-                {
-                  title: "Learning in Progress",
-                  details: [
-                    "Working on personal and academic projects",
-                    "Developing practical skills through coding challenges",
-                    "Contributing to open-source repositories",
-                    "Creating portfolio projects"
-                  ]
-                },
-                {
-                  title: "Skill Development Focus",
-                  details: [
-                    "Self-learning advanced web development techniques",
-                    "Building front-end projects",
-                    "Participating in coding bootcamps and online certifications",
-                    "Networking with tech professionals"
-                  ]
-                }
-              ].map((exp, index) => (
+              {experiences.map((exp, index) => (
                 <motion.div
-                  key={index}
+                  key={exp._id}
                   variants={itemVariants}
                   className="group bg-white/5 backdrop-blur-lg border border-white/10 
                     p-10 rounded-3xl transition-all duration-500
@@ -206,36 +266,28 @@ const AboutPage = () => {
             </h2>
             
             <div className="mt-16 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-              {[
-                { icon: <FaHtml5 />, name: "HTML5" },
-                { icon: <FaCss3 />, name: "CSS3" },
-                { icon: <FaReact />, name: "React" },
-                { icon: <SiTypescript />, name: "TypeScript" },
-                { icon: <TbBrandCpp />, name: "C++" },
-                { icon: <SiC />, name: "C" },
-                { icon: <SiNextdotjs />, name: "Next.js" },
-                { icon: <SiSanity />, name: "Sanity" },
-                { icon: <SiTailwindcss />, name: "Tailwind CSS" },
-                { icon: <FaFigma />, name: "Figma" }
-              ].map((skill, index) => (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  className="group flex flex-col items-center justify-center p-8
-                    bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl
-                    transition-all duration-500 hover:bg-white/10 
-                    hover:border-white/20 hover:shadow-2xl hover:shadow-accent/20
-                    hover:-translate-y-1">
-                  <div className="text-6xl text-white/70 group-hover:text-accent 
-                    group-hover:scale-125 transition-all duration-500">
-                    {skill.icon}
-                  </div>
-                  <span className="mt-6 text-lg font-medium text-white/70 
-                    group-hover:text-white transition-colors duration-300">
-                    {skill.name}
-                  </span>
-                </motion.div>
-              ))}
+              {skills.map((skill, index) => {
+                const SkillIcon = getSkillIcon(skill.icon);
+                return (
+                  <motion.div
+                    key={skill._id}
+                    variants={itemVariants}
+                    className="group flex flex-col items-center justify-center p-8
+                      bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl
+                      transition-all duration-500 hover:bg-white/10 
+                      hover:border-white/20 hover:shadow-2xl hover:shadow-accent/20
+                      hover:-translate-y-1">
+                    <div className="text-6xl text-white/70 group-hover:text-accent 
+                      group-hover:scale-125 transition-all duration-500">
+                      <SkillIcon />
+                    </div>
+                    <span className="mt-6 text-lg font-medium text-white/70 
+                      group-hover:text-white transition-colors duration-300">
+                      {skill.name}
+                    </span>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>

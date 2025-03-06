@@ -16,7 +16,7 @@ const Nav: React.FC = () => {
     const pathname = usePathname();
     
     return (
-        <nav className="flex gap-8">
+        <nav className="flex gap-6">
             {Links.map((linkItem) => (
                 <Link
                     href={linkItem.path}
