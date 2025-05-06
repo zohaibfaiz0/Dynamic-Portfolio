@@ -139,13 +139,13 @@ const Contact: React.FC = () => {
 
                             {/* Social Links */}
                             <div className="space-y-6">
-                                <h4 className="text-2xl font-bold text-white">Follow Us</h4>
+                                <h4 className="text-2xl font-bold text-white">Follow Me</h4>
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
                                         { icon: <FaInstagram />, label: "Instagram", href: "https://www.instagram.com" },
                                         { icon: <FaFacebook />, label: "Facebook", href: "https://www.facebook.com" },
-                                        { icon: <FaGithub />, label: "GitHub", href: "https://github.com" },
-                                        { icon: <FaLinkedin />, label: "LinkedIn", href: "https://www.linkedin.com" }
+                                        { icon: <FaGithub />, label: "GitHub", href: "https://github.com/zohaibfaiz0" },
+                                        { icon: <FaLinkedin />, label: "LinkedIn", href: "https://www.linkedin.com/in/muhammad-zohaib-920531310/" }
                                     ].map((social, index) => (
                                         <a key={index} 
                                             href={social.href}
