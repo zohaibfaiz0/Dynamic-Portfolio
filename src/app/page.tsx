@@ -111,7 +111,7 @@ const Home: React.FC = () => {
               whileTap={{ scale: 0.95 }}
             >
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-[#00ff99] to-cyan-500">
-                Next.js & Sanity Specialist | UI Architect
+              Next.js • Sanity • Frontend Engineer
               </span>
             </motion.span>
             
@@ -140,7 +140,7 @@ const Home: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.1, duration: 1 }}
               >
-                , a frontend developer shaping seamless, high-performance web experiences.
+                , a frontend developer building performant, elegant, and scalable web applications.
               </motion.span>
             </motion.h1>
             
@@ -149,15 +149,19 @@ const Home: React.FC = () => {
               variants={fadeInUpVariants}
               whileHover={{ color: "rgba(255, 255, 255, 0.9)" }}
             >
-              Passionate about{' '}
+              I specialize in building sleek, scalable frontends using{' '}
               <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-[#00ff99] to-cyan-500">
                 Next.js
-              </span> and{' '}
+              </span>,{' '}
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-[#00ff99] to-cyan-500">
+                TypeScript
+              </span>, and{' '}
               <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-[#00ff99] to-cyan-500">
                 Sanity
-              </span>,{' '}
-              I craft interactive, responsive, and visually engaging websites.
-              Let's turn your ideas into stunning digital experiences! ✨
+              </span>. With a strong foundation in Python and a growing interest in{' '}
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-[#00ff99] to-cyan-500">
+                Agentic AI
+              </span>, I’m exploring the future of intelligent and interactive web solutions.
             </motion.p>
             
             {/* Buttons & Social Links */}
@@ -211,7 +215,7 @@ const Home: React.FC = () => {
                     whileHover={{ 
                       scale: 1.2,
                       backgroundColor: "rgba(0, 255, 153, 0.3)",
-                      boxShadow: "0 0 20px rgba(0, 255, 153, 0.5)"
+                      boxShadow: "0 0 20px rgba(0, 255, 153, 0.5)" 
                     }}
                     whileTap={{ scale: 0.9 }}
                     initial={{ opacity: 0, y: 20 }}
